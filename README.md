@@ -5,14 +5,17 @@ _Đồ án kết thúc môn học cloud computing_
 
 Đảm bảo máy đã cài trước [Node.js](https://nodejs.org/en/)
 
-Vào Terminal để cài đặt các dependencies
+Vào terminal để cài đặt các dependencies
 
-```html
-npm install
+``` bash
+$ npm install
 ````
 
 ## Chạy Project
 
-```html
-npm run dev
+```bash
+$ npm run dev
 ```
+
+## License
+Copyright (c) 2021 Pham Ngoc Duc
