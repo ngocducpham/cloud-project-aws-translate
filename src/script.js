@@ -1,13 +1,13 @@
 import './components/source-drop';
-import './components/target-drop'
-import './libs/aws-sdk'
+import './components/target-drop';
+import './libs/aws-sdk';
 import { languageCodes } from './utils/langcode';
 
 document.getElementById('inputText').focus();
 AWS.config.region = 'us-east-2';
 AWS.config.credentials = new AWS.Credentials(
-	'AKIAZUSFWJ4QJ3MGRUHE',
-	'QNEwt7glXKrL4KpV389e0Q1BZa+MHsWguUwpowiv'
+	'your access key',
+	'your secret key'
 );
 
 var translate = new AWS.Translate({ region: AWS.config.region });
@@ -22,7 +22,7 @@ let transTimeout;
 inputText.addEventListener('keyup', realTimeTrans);
 clearInputButton.addEventListener('click', clearInputs);
 speechInput.addEventListener('click', doSynthesizeInput);
-speechOutput.addEventListener('click',doSynthesizeOutput);
+speechOutput.addEventListener('click', doSynthesizeOutput);
 
 function realTimeTrans() {
 	clearTimeout(transTimeout);
@@ -51,15 +51,18 @@ function doTranslate() {
 	}
 
 	var sourceDropdown = document.getElementById('sourceLanguageDropdown');
-	var sourceLanguageCode = sourceDropdown.getAttribute('code');
+	var sourceLanguageButtonText = document.querySelector('.sourceLanguageButtonText');
 
 	var targetDropdown = document.getElementById('targetLanguageDropdown');
 	var targetLanguageCode = targetDropdown.getAttribute('code');
 
 	let detectLangText = document.querySelector('.langDetectText');
-	if (sourceLanguageCode == 'auto') {
+
+	if (sourceLanguageButtonText.innerText.indexOf('auto') > -1) {
+		sourceDropdown.setAttribute('code', 'auto');
 		detectLangText.classList.remove('hidden');
 	} else detectLangText.classList.add('hidden');
+	var sourceLanguageCode = sourceDropdown.getAttribute('code');
 
 	var params = {
 		Text: inputText,
@@ -110,7 +113,7 @@ function doSynthesize(text, languageCode) {
 			break;
 		case 'zh':
 		case 'zh-TW':
-			voiceId ='Zhiyu'
+			voiceId = 'Zhiyu';
 			break;
 		case 'da':
 			voiceId = 'Naja';
