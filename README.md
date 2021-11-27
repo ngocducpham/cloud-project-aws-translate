@@ -11,20 +11,28 @@ Vào terminal để cài đặt các dependencies
 $ npm install
 ````
 
-### Nhập access key và sercet key 
-Vào file `/src/script.js` và nhập key của bạn
+### Thay đổi access key và sercet key 
+Vào file `/src/script.js` sẽ thấy dòng dưới đây. Thay `your-access-key` và `your-secret-key` bằng key của bạn
 ```javascript
 AWS.config.credentials = new AWS.Credentials(
-	'your access key',
-	'your secret key'
+	'your-access-key',
+	'your-secret-key'
 );
 ```
+Nếu bạn chưa biết cách lấy key? Tham khảo [AWS IAM](https://aws.amazon.com/vi/iam/)
 
-
-## Chạy Project
+## Chạy project
 
 ```bash
 $ npm run dev
+or
+$ npm run preview
+```
+
+## Build project
+
+```bash
+$ npm run build
 ```
 
 ## License
