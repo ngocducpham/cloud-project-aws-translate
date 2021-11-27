@@ -11,6 +11,16 @@ Vào terminal để cài đặt các dependencies
 $ npm install
 ````
 
+### Nhập access key và sercet key 
+Vào file `/src/script.js` và nhập key của bạn
+```javascript
+AWS.config.credentials = new AWS.Credentials(
+	'your access key',
+	'your secret key'
+);
+```
+
+
 ## Chạy Project
 
 ```bash
