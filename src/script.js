@@ -6,8 +6,8 @@ import { languageCodes } from './utils/langcode';
 document.getElementById('inputText').focus();
 AWS.config.region = 'us-east-2';
 AWS.config.credentials = new AWS.Credentials(
-	'AKIAZUSFWJ4QJ3MGRUHE',
-	'QNEwt7glXKrL4KpV389e0Q1BZa+MHsWguUwpowiv'
+	'your-access-key',
+	'your-secret-key'
 );
 
 var translate = new AWS.Translate({ region: AWS.config.region });
