@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>AWS Translate Demo</title>
+	<link rel="stylesheet" href="./public/styles/style.css">
+	<script type='module' src="./src/script.js" defer></script>
+</head>
+
+<body class='bg-white'>
+	<div class='modal fixed w-full h-full hidden z-10 bg-transparent'></div>
+	<div class='mx-auto mt-12 max-w-6xl'>
+		<h1 class='text-3xl font-bold text-gray-500 text-center'>AWS Translate Demo</h1>
+		<div class='shadow-lg rounded-md mt-6'>
+			<h2 class='font-semibold text-lg bg-gray-100 py-4 px-7 rounded-t-md'>Real-time translation</h2>
+			<div class='flex flex-1 px-7 py-5 justify-around '>
+				<div class='w-1/2 relative'>
+					<div class='text-gray-500 font-semibold'>Source Language</div>
+					<button id="sourceLanguageDropdown" type="button"
+						class='border-2 mt-4 w-full px-2 py-1 outline-none focus:border-blue-400 text-left flex relative cursor-default'>
+						<span class='sourceLanguageButtonText flex items-center'>
+							Auto (auto)
+						</span>
+						<span class="pointer-events-none flex items-center absolute right-2">
+							<svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+								fill="currentColor" aria-hidden="true">
+								<path fill-rule="evenodd"
+									d="M10 3a1 1 0 01.707.293l3 3a1 1 0 01-1.414 1.414L10 5.414 7.707 7.707a1 1 0 01-1.414-1.414l3-3A1 1 0 0110 3zm-3.707 9.293a1 1 0 011.414 0L10 14.586l2.293-2.293a1 1 0 011.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
+									clip-rule="evenodd">
+								</path>
+							</svg>
+						</span>
+					</button>
+					<div
+						class='sourceLanguageContainer absolute top-20 hidden w-full mt-1 shadow-lg border-2 z-20 bg-white'>
+						<div class='relative'>
+							<input type="text"
+								class='sourceLanguageSearchInput px-2 pl-8 py-1 w-full border-2 border-blue-400 outline-none'>
+							<svg class='absolute top-2 left-2 w-5 h-5' xmlns="http://www.w3.org/2000/svg"
+								xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em"
+								height="1em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24">
+								<path
+									d="M10 18a7.952 7.952 0 0 0 4.897-1.688l4.396 4.396l1.414-1.414l-4.396-4.396A7.952 7.952 0 0 0 18 10c0-4.411-3.589-8-8-8s-8 3.589-8 8s3.589 8 8 8zm0-14c3.309 0 6 2.691 6 6s-2.691 6-6 6s-6-2.691-6-6s2.691-6 6-6z"
+									fill="currentColor" />
+							</svg>
+						</div>
+						<ul tabindex='-1' role='listbox' class='lannguageSourceList overflow-x-auto max-h-60'>
+						</ul>
+					</div>
+					<div class='relative'>
+						<textarea id="inputText"
+							class='w-full border-2 resize-none mt-3 h-40 p-2 pr-12 outline-none focus:border-blue-400'
+							placeholder='Enter Text'></textarea>
+						<button class='clearInputButton text-gray-600 hover:bg-gray-100 rounded-full w-8 h-8 flex items-center justify-center
+						absolute top-4 right-2'>
+							<svg class='fill-current text-gray-400 w-6 h-6' xmlns="http://www.w3.org/2000/svg"
+								xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img"
+								preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24">
+								<path fill="currentColor"
+									d="M13.41 12l4.3-4.29a1 1 0 1 0-1.42-1.42L12 10.59l-4.29-4.3a1 1 0 0 0-1.42 1.42l4.3 4.29l-4.3 4.29a1 1 0 0 0 0 1.42a1 1 0 0 0 1.42 0l4.29-4.3l4.29 4.3a1 1 0 0 0 1.42 0a1 1 0 0 0 0-1.42z" />
+							</svg>
+						</button>
+						<button class='speechInputButton text-gray-600 hover:bg-gray-100 rounded-full w-8 h-8 flex items-center justify-center
+							absolute bottom-3 right-2'>
+							<svg class='fill-current text-gray-400' xmlns="http://www.w3.org/2000/svg"
+								xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em"
+								height="1em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 1200 1200">
+								<path
+									d="M0 350.411h282.787L708.197 3.688v1192.623L282.787 849.59H0V350.411zm868.033-56.558c83.605 83.607 126.229 185.246 127.868 304.918c0 114.755-42.623 213.114-127.868 295.082l-86.066-88.523c59.018-59.018 88.525-128.688 88.525-209.018c0-81.967-29.509-153.277-88.525-213.934l86.066-88.525zm147.541-145.082C1138.524 271.722 1200 420.083 1200 593.853c0 173.771-61.476 322.951-184.426 447.541l-90.984-90.982c98.361-96.722 147.541-215.164 147.541-355.327c0-140.164-49.18-259.427-147.541-357.788l90.984-88.526z"
+									fill="currentColor" />
+							</svg>
+						</button>
+					</div>
+					<div id='lableLimit' class='text-gray-500'>0 characters, 0 of 5000 bytes used</div>
+					<div class='langDetectText mt-3 hidden'></div>
+				</div>
+				<div class='mx-4 relative w-5'>
+					
+				</div>
+				<div class='w-1/2 relative'>
+					<div class='text-gray-500 font-semibold'>Target Language</div>
+					<button id="targetLanguageDropdown" type="button" code='af'
+						class='border-2 mt-4 w-full px-2 py-1 outline-none focus:border-blue-400 text-left flex relative cursor-default'>
+						<span class='targetLanguageButtonText flex items-center'>
+							Afrikaans (af)
+						</span>
+						<span class="pointer-events-none flex items-center absolute right-2">
+							<svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+								fill="currentColor" aria-hidden="true">
+								<path fill-rule="evenodd"
+									d="M10 3a1 1 0 01.707.293l3 3a1 1 0 01-1.414 1.414L10 5.414 7.707 7.707a1 1 0 01-1.414-1.414l3-3A1 1 0 0110 3zm-3.707 9.293a1 1 0 011.414 0L10 14.586l2.293-2.293a1 1 0 011.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
+									clip-rule="evenodd">
+								</path>
+							</svg>
+						</span>
+					</button>
+					<div
+						class='targetLanguageContainer absolute top-20 hidden w-full mt-1 shadow-lg border-2 z-20 bg-white'>
+						<div class='relative'>
+							<input type="text"
+								class='targetLanguageSearchInput px-2 pl-8 py-1 w-full border-2 border-blue-400 outline-none'>
+							<svg class='absolute top-2 left-2 w-5 h-5' xmlns="http://www.w3.org/2000/svg"
+								xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em"
+								height="1em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24">
+								<path
+									d="M10 18a7.952 7.952 0 0 0 4.897-1.688l4.396 4.396l1.414-1.414l-4.396-4.396A7.952 7.952 0 0 0 18 10c0-4.411-3.589-8-8-8s-8 3.589-8 8s3.589 8 8 8zm0-14c3.309 0 6 2.691 6 6s-2.691 6-6 6s-6-2.691-6-6s2.691-6 6-6z"
+									fill="currentColor" />
+							</svg>
+						</div>
+						<ul tabindex='-1' role='listbox' class='lannguageTargetList overflow-x-auto max-h-60'>
+						</ul>
+					</div>
+					<div class='relative'>
+						<textarea id="outputText"
+							class='w-full border-2 resize-none mt-3 h-40 p-2 pr-12 outline-none focus:border-blue-400'
+							placeholder='Translated Text'></textarea>
+						<button class='speechOutputButton text-gray-600 hover:bg-gray-100 rounded-full w-8 h-8 flex items-center justify-center
+							absolute bottom-3 right-2'>
+							<svg class='fill-current text-gray-400' xmlns="http://www.w3.org/2000/svg"
+								xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em"
+								height="1em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 1200 1200">
+								<path
+									d="M0 350.411h282.787L708.197 3.688v1192.623L282.787 849.59H0V350.411zm868.033-56.558c83.605 83.607 126.229 185.246 127.868 304.918c0 114.755-42.623 213.114-127.868 295.082l-86.066-88.523c59.018-59.018 88.525-128.688 88.525-209.018c0-81.967-29.509-153.277-88.525-213.934l86.066-88.525zm147.541-145.082C1138.524 271.722 1200 420.083 1200 593.853c0 173.771-61.476 322.951-184.426 447.541l-90.984-90.982c98.361-96.722 147.541-215.164 147.541-355.327c0-140.164-49.18-259.427-147.541-357.788l90.984-88.526z"
+									fill="currentColor" />
+							</svg>
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+
+</html>
