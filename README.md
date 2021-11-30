@@ -12,8 +12,9 @@ $ npm install
 ````
 
 ### Thay đổi access key và sercet key 
-Vào file `/src/script.js` sẽ thấy dòng dưới đây. Thay `your-access-key` và `your-secret-key` bằng key của bạn
+Vào file `/src/script.js` sẽ thấy dòng dưới đây. Thay đổi khu vực ở  `your-region`, thay đổi key ở `your-access-key` và `your-secret-key`
 ```javascript
+AWS.config.region = 'your-region';
 AWS.config.credentials = new AWS.Credentials(
 	'your-access-key',
 	'your-secret-key'

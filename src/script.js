@@ -4,7 +4,7 @@ import './libs/aws-sdk';
 import { languageCodes } from './utils/langcode';
 
 document.getElementById('inputText').focus();
-AWS.config.region = 'us-east-2';
+AWS.config.region = 'your-region';
 AWS.config.credentials = new AWS.Credentials(
 	'your-access-key',
 	'your-secret-key'
@@ -19,7 +19,8 @@ let speechInput = document.querySelector('.speechInputButton');
 let speechOutput = document.querySelector('.speechOutputButton');
 let transTimeout;
 
-inputText.addEventListener('keyup', realTimeTrans);
+inputText.addEventListener('input', realTimeTrans);
+inputText.addEventListener('drop',translateFile);
 clearInputButton.addEventListener('click', clearInputs);
 speechInput.addEventListener('click', doSynthesizeInput);
 speechOutput.addEventListener('click', doSynthesizeOutput);
@@ -29,6 +30,20 @@ function realTimeTrans() {
 	transTimeout = setTimeout(doTranslate, 300);
 }
 
+function translateFile(e){
+	e.preventDefault();
+	
+	let file = e.dataTransfer.files[0],
+        reader = new FileReader();
+    reader.onload = function(event) {
+        inputText.value = event.target.result;		
+    };
+	reader.onloadend = function(){
+		doTranslate();
+	}
+    reader.readAsText(file);
+}
+
 function readStringBytes(string) {
 	let len = string.length;
 	let totalBytes = 0;
@@ -36,8 +51,8 @@ function readStringBytes(string) {
 		const element = string[index];
 		totalBytes += new Blob([String.fromCharCode(element.codePointAt(0))]).size;
 	}
-	let lableLimit = document.getElementById('lableLimit');
-	lableLimit.textContent = `${len} characters, ${totalBytes} of 5000 bytes used`;
+	//let lableLimit = document.getElementById('lableLimit');
+	//lableLimit.textContent = `${len} characters, ${totalBytes} of 5000 bytes used`;
 	if (totalBytes > 5000) return string.slice(0, 5000);
 	return string;
 }
