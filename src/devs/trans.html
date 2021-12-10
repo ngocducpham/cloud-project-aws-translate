@@ -1,203 +1,412 @@
-<!DOCTYPE html>
-<html>
-
+<!doctype html>
+<html lang="en">
 <head>
-    <title>Amazon Translate</title>
-    <link rel="stylesheet" href="./style.css">
-    <script src="https://sdk.amazonaws.com/js/aws-sdk-2.1024.0.min.js"></script>
+  <title>Amazon Translate</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Latest compiled and minified CSS for Bootstrap -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+   <!-- Custom CSS -->
+   <style>
+     .topHeader
+     {
+       background-color: #6441a4;
+       padding: 10px;
+       border-bottom: solid 1px #cacaca;
+       color: white
+     }
+
+     .panelHeading
+     {
+       background-color: #6441a4 !important;
+     }
+
+     .panelBody
+     {
+      min-height: 450px;  max-height: 450px;overflow-y: scroll;
+     }
+
+     body{
+        margin-left: 0px;
+        margin-right: 0px;
+        height: 100%;
+      }
+   </style>
 </head>
-
 <body>
-    <h1 style="text-align: left">Amazon Translate Demo</h1>
-    <br />
-    <table class="tg">
-        <tr>
-            <th align="left">
-                Source Language Code:
-                <select id="sourceLanguageCodeDropdown">
-                    <option value="auto">auto</option>
-                    <option value="vi">vi</option>
-                    <option value="en">en</option>
-                    <option value="ar">ar</option>
-                    <option value="cs">cs</option>
-                    <option value="de">de</option>
-                    <option value="es">es</option>
-                    <option value="fr">fr</option>
-                    <option value="it">it</option>
-                    <option value="ja">ja</option>
-                    <option value="pt">pt</option>
-                    <option value="ru">ru</option>
-                    <option value="tr">tr</option>
-                    <option value="zh">zh</option>
-                    <option value="zh-TW">zh-TW</option>
+  <div class="container-fluid">
+    <!--Top Header-->
+    <div class="row topHeader">
+      <div class="col-md-12">
+          <h4>Amazon Translate - Artificial Intelligence on AWS - Powerful machine learning for all Developers and Data Scientists</h4>
+      </div>
+    </div>
+
+    <!--Status Label-->
+    <div class="row">
+      <div class="col-md-12">
+        <p class="bg-info">
+        <div id="connecting-div"></div>
+        </p>
+      </div>
+    </div>
+
+    <div class="row" style="padding: 10px;">
+      <div class="col-md-6">
+          <div class="form-inline">
+            <div class="form-group">
+              <input type="text" id="channel" class="form-control" value="" placeholder="Channel"/>
+            </div>
+            <div class="form-group">
+              <select id="sourceLanguage" class="form-control">
+                  <option value="en">en</option>
+                  <option value="ar">ar</option>
+                  <option value="de" selected="selected">de</option>
+                  <option value="es">es</option>
+                  <option value="fr">fr</option>
+                  <option value="pt">pt</option>
+                  <option value="zh">zh</option>
                 </select>
-            </th>
-            <th align="left">
-                Target Language Code:
-                <select id="targetLanguageCodeDropdown">
-                    <option value="en">en</option>
-                    <option value="vi">vi</option>
-                    <option value="ar">ar</option>
-                    <option value="cs">cs</option>
-                    <option value="de">de</option>
-                    <option value="es">es</option>
-                    <option value="fr">fr</option>
-                    <option value="it">it</option>
-                    <option value="ja">ja</option>
-                    <option value="pt">pt</option>
-                    <option value="ru">ru</option>
-                    <option value="tr">tr</option>
-                    <option value="zh">zh</option>
-                    <option value="zh-TW">zh-TW</option>
-                </select>
-            </th>
-        </tr>
-        <tr>
-            <th>
-                <textarea id="inputText" name="inputText" rows="10" cols="50" placeholder="Text to translate..."
-                    onkeyup='realTimeTrans()'></textarea>
-            </th>
-            <th>
-                <textarea id="outputText" name="outputText" rows="10" cols="50"
-                    placeholder="Translated text..."></textarea>
-            </th>
-        </tr>
-        <tr>
-            <th align="left">
-                <button type="button" name="translateButton" onclick="doTranslate()">Translate</button>
-                <button type="button" name="synthesizeButton" onclick="doSynthesizeInput()">Synthesize Input
-                    Speech</button>
-                <button type="button" name="clearButton" onclick="clearInputs()">Clear</button>
-            </th>
-            <th align="left">
-                <button type="button" name="synthesizeButton" onclick="doSynthesizeOutput()">Synthesize Output
-                    Speech</button>
-            </th>
-        </tr>
-    </table>
-    <script type="text/javascript">
-        document.getElementById("inputText").focus();
-        AWS.config.region = 'us-east-2';
-        AWS.config.credentials = new AWS.Credentials("AKIAZUSFWJ4QJ3MGRUHE", "QNEwt7glXKrL4KpV389e0Q1BZa+MHsWguUwpowiv");
+            </div>
+            <div class="form-group">
+              <select id="targetLanguage" class="form-control">
+                <option value="en" selected="selected">en</option>
+                <option value="ar">ar</option>
+                <option value="de">de</option>
+                <option value="es">es</option>
+                <option value="fr">fr</option>
+                <option value="pt">pt</option>
+                <option value="zh">zh</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <button type="button" class="form-control" id="btn-go" onclick="connect()">Go</button>
+              <button type="button" class="form-control" id="btn-stop" onclick="location.href='index.html';">Stop</button>
+              <span id="status"></span>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-inline">
+              <div class="form-group">
+                  <input type="checkbox" id="cbSpeak" value="Speak"> Speak Live Translation
+                  <input type="text" id="follow" class="form-control" value="" placeholder="follow"/>
+                </div>
+            </div>
+          </div>
+      </div>
 
-        var translate = new AWS.Translate({ region: AWS.config.region });
-        var polly = new AWS.Polly();
+    <!--Chat Boxes-->
+    <div class="row">
+      <!--Live Chat-->
+      <div class="col-md-6">
+        <div class="panel panel-primary">
+          <div class="panel-heading panelHeading">Live Chat</div>
+            <div id="livechatc" class="panel-body panelBody">
+              <div class="subscribe" id="livechat"></div>
+          </div>
+        </div>
+      </div>
+      <!--Live Chat-->
+      <!--Translated Chat-->
+      <div class="col-md-6">
+        <div class="panel panel-primary">
+          <div class="panel-heading panelHeading">Live Translation</div>
+            <div id="livetranslationc" class="panel-body panelBody">
+              <div class="imageDetected" id="livetranslation"></div>
+          </div>
+        </div>
+      </div>
+      <!--Translated Chat-->
+    </div>
 
-        let transTimeout;
+    <!--Send Message-->
+    <div class="row">
+        <div class="col-md-11">
+            <input type="text" id="message" class="form-control"/>
+        </div>
+        <div class=" col-md-1">
+          <button type="button" class="form-control btn btn-default" id="btn-send" onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+  </div>
 
-        function realTimeTrans() {
-            clearTimeout(transTimeout);
-            transTimeout = setTimeout(doTranslate, 500);
-        }
+   <!-- Latest compiled and minified JavaScript -->
+   <!-- jQuery first, then Bootstrap JS -->
+   <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
-        function doTranslate() {
-            var inputText = document.getElementById('inputText').value;
-            if (!inputText) {
-                alert("Input text cannot be empty.");
-                exit();
-            }
+   <script src="aws-js-sdk/dist/aws-sdk-all.js"></script>
+   <script src="http://cdn.tmijs.org/js/1.2.1/tmi.min.js" integrity="sha384-eE0n7sm1W7DOUI2Xh5I4qSpZTe6hupAO0ovLfqEy0yVJtGRBNfssdmjbJhEYm6Bw" crossorigin="anonymous"></script>
+   <script>
+     cred = {
+          twitchUsername: "Twitch user name",
+          twitchOAuthToken: "Twitch OAuth token",
+          awsAccessKeyId: "access key",
+          awsSecretAccessKey: "secret key"
+     };
 
-            var sourceDropdown = document.getElementById("sourceLanguageCodeDropdown");
-            var sourceLanguageCode = sourceDropdown.options[sourceDropdown.selectedIndex].text;
+     AWS.config.region = 'region';
+     ep = new AWS.Endpoint('endpoint');
 
-            var targetDropdown = document.getElementById("targetLanguageCodeDropdown");
-            var targetLanguageCode = targetDropdown.options[targetDropdown.selectedIndex].text;
+     AWS.config.credentials = new AWS.Credentials(cred.awsAccessKeyId, cred.awsSecretAccessKey);
+     window.translator = new AWS.Translate({endpoint: ep, region: AWS.config.region});
 
+     /**************************Init and Connect to Chat****************************/
+     function connect(){
+       init();
+
+       //Twitch Client
+       var options = {
+           options: {
+             debug: false
+           },
+           connection: {
+             cluster: "aws",
+             reconnect: true
+           },
+           identity: {
+             username: cred.twitchUsername,
+             password: cred.twitchOAuthToken
+           },
+           channels: [con.channel]
+       };
+
+       window.client = tmi.client(options);
+
+       window.client.connect();
+
+       //Attached Handlers
+       window.client.on("chat", onChat);
+       window.client.on("connecting", onConnecting);
+       window.client.on("connected", onConnected);
+
+       //Disable UI Elements
+       document.getElementById("sourceLanguage").disabled = true;
+       document.getElementById("targetLanguage").disabled = true;
+       document.getElementById("channel").disabled = true;
+       document.getElementById("btn-go").disabled = true;
+     }
+
+     function init(){
+       //Get UI Controls
+       var lc = document.getElementById("livechat");
+       var lt = document.getElementById("livetranslation")
+       var lcc = document.getElementById("livechatc");
+       var ltc = document.getElementById("livetranslationc")
+       var cbspeak = document.getElementById("cbSpeak")
+       var follow = document.getElementById("follow");
+       var sendMessage = document.getElementById("message");
+
+       //Cache values
+       con = {
+         channel: document.getElementById("channel").value,
+         sourceLanguage: document.getElementById("sourceLanguage").value,
+         targetLanguage: document.getElementById("targetLanguage").value,
+         liveChatUI: lc,
+         liveTranslationUI: lt,
+         liveChatUIContainer: lcc,
+         liveTranslationUIContainer: ltc,
+         cbSpeak: cbspeak,
+         follow: follow,
+         sendMessage: sendMessage
+       }
+
+         lc.innerHTML = '';
+         lt.innerHTML = '';
+
+         //Speaker
+        var voiceId = "Joanna";
+        if(con.targetLanguage == "en")
+           voiceId = "Joanna";
+        else if(con.targetLanguage == "de")
+             voiceId = "Marlene";
+        else if(con.targetLanguage == "es")
+            voiceId = "Conchita";
+        else if(con.targetLanguage == "fr")
+           voiceId = "Celine";
+        else if(con.targetLanguage == "pt")
+           voiceId = "Ines";
+        else
+           voiceId = "Joanna";
+         window.audioPlayer = AudioPlayer(voiceId);
+     }
+     /**************************Init and Connect to Chat****************************/
+
+     /**************************Receive and Translate Chat****************************/
+     function onChat (channel, userstate, message, self) {
+         // Don't listen to my own messages..
+         if (self) return;
+
+         //Translate
+         if (message) {
+           var username = userstate['username'];
+
+           var params = {
+               Text: message,
+               SourceLanguageCode: con.sourceLanguage,
+               TargetLanguageCode:  con.targetLanguage
+           };
+
+           window.translator.translateText(params, function onIncomingMessageTranslate(err, data) {
+              if (err) {
+                 console.log("Error calling Translate. " + err.message + err.stack);
+             }
+              if (data) {
+                  console.log("M: " + message);
+                  console.log("T: " + data.TranslatedText);
+
+                  //Print original message in chat UI
+                  con.liveChatUI.innerHTML += '<strong>' + username + '</strong>: ' +  message + '<br>';
+
+                  //Print translation in translation UI
+                  con.liveTranslationUI.innerHTML += '<strong>' + username + '</strong>: ' + data.TranslatedText + '<br>';
+
+                  //If speak translation in enabled, speak translated message
+                  if(con.cbSpeak.checked){
+                    if(con.follow.value == "" || username == con.follow.value)
+                      audioPlayer.Speak(username + " says " + data.TranslatedText);
+                  }
+
+                  //Scroll chat and translated UI to bottom to keep focus on latest messages
+                  con.liveChatUIContainer.scrollTop = con.liveChatUIContainer.scrollHeight;
+                  con.liveTranslationUIContainer.scrollTop = con.liveTranslationUIContainer.scrollHeight;
+                }
+           });
+         }
+     }
+     /**************************Receive and Translate Chat****************************/
+
+     /**************************Client Connecting****************************/
+     function onConnecting (address, port) {
+         document.getElementById("status").innerHTML = " [ Connecting...]"
+     }
+
+     function onConnected (address, port) {
+         document.getElementById("status").innerHTML = " [ Connected ]"
+         window.audioPlayer.Speak("Connected to channel " + con.channel + ". You should now be getting live chat messages.");
+     }
+     /**************************Client Connecting****************************/
+
+     /**************************Send Message****************************/
+     function sendMessage(){
+          if(con.sendMessage.value){
+            message = con.sendMessage.value;
             var params = {
-                Text: inputText,
-                SourceLanguageCode: sourceLanguageCode,
-                TargetLanguageCode: targetLanguageCode
+                Text: con.sendMessage.value,
+                SourceLanguageCode: con.targetLanguage,
+                TargetLanguageCode:  con.sourceLanguage
             };
 
-            translate.translateText(params, function (err, data) {
-                if (err) {
-                    console.log(err, err.stack);
-                    alert("Error calling Amazon Translate. " + err.message);
-                    return;
-                }
-                if (data) {
-                    var outputTextArea = document.getElementById('outputText');
-                    outputTextArea.value = data.TranslatedText;
-                    console.log(data.SourceLanguageCode);
-                }
+            window.translator.translateText(params, function onSendMessageTranslate(err, data) {
+                  if (err) {
+                     console.log("Error calling Translate. " + err.message + err.stack);
+                  }
+                  if (data) {
+                      console.log("M: " + message);
+                      console.log("T: " + data.TranslatedText);
+
+                      //Send message to chat
+                      window.client.action(con.channel, data.TranslatedText);
+
+                      //Clear send message UI
+                      con.sendMessage.value = "";
+
+                      //Print original message in Translated UI
+                      con.liveTranslationUI.innerHTML += '<strong> ME: </strong>: ' +  message + '<br>';
+
+                      //Print translated message in Chat UI
+                      con.liveChatUI.innerHTML += '<strong> ME: </strong>: ' + data.TranslatedText + '<br>';
+
+                      //Scroll chat and translated UI to bottom to keep focus on latest messages
+                      con.liveChatUIContainer.scrollTop = con.liveChatUIContainer.scrollHeight;
+                      con.liveTranslationUIContainer.scrollTop = con.liveTranslationUIContainer.scrollHeight;
+                  }
             });
-        }
+          }
+     }
+     /**************************Send Message****************************/
 
-        function doSynthesizeInput() {
-            var text = document.getElementById('inputText').value.trim();
-            if (!text) {
-                return;
-            }
-            var sourceLanguageCode = document.getElementById("sourceLanguageCodeDropdown").value;
-            doSynthesize(text, sourceLanguageCode);
-        }
+     /**************************Audio player****************************/
+     function AudioPlayer(voiceId) {
+         var audioPlayer = document.createElement('audio');
+         audioPlayer.setAttribute("id", "audioPlayer");
+         document.body.appendChild(audioPlayer);
 
-        function doSynthesizeOutput() {
-            var text = document.getElementById('outputText').value.trim();
-            if (!text) {
-                return;
-            }
-            var targetLanguageCode = document.getElementById("targetLanguageCodeDropdown").value;
-            doSynthesize(text, targetLanguageCode);
-        }
+         var isSpeaking = false;
 
-        function doSynthesize(text, languageCode) {
-            var voiceId;
-            switch (languageCode) {
-                case "de":
-                    voiceId = "Marlene";
-                    break;
-                case "en":
-                    voiceId = "Joanna";
-                    break;
-                case "es":
-                    voiceId = "Penelope";
-                    break;
-                case "fr":
-                    voiceId = "Celine";
-                    break;
-                case "pt":
-                    voiceId = "Vitoria";
-                    break;
-                default:
-                    voiceId = null;
-                    break;
-            }
-            if (!voiceId) {
-                alert("Speech synthesis unsupported for language code: \"" + languageCode + "\"");
-                return;
-            }
-            var params = {
-                OutputFormat: "mp3",
-                SampleRate: "8000",
-                Text: text,
-                TextType: "text",
-                VoiceId: voiceId
-            };
-            polly.synthesizeSpeech(params, function (err, data) {
-                if (err) {
-                    console.log(err, err.stack); // an error occurred
-                    alert("Error calling Amazon Polly. " + err.message);
-                }
-                else {
-                    var uInt8Array = new Uint8Array(data.AudioStream);
-                    var arrayBuffer = uInt8Array.buffer;
-                    var blob = new Blob([arrayBuffer]);
-                    var url = URL.createObjectURL(blob);
+         var speaker = {
+             self: this,
+             playlist:[],
 
-                    audioElement = new Audio([url]);
-                    audioElement.play();
-                }
-            });
-        }
+             Speak: function (text) {
+                 //If currently speaking a message, add new message to the playlist
+                 if (isSpeaking) {
+                     this.playlist.push(text);
+                 } else {
+                     speakTextMessage(text).then(speakNextTextMessage)
+                 }
+             }
+         }
 
-        function clearInputs() {
-            document.getElementById('inputText').value = "";
-            document.getElementById('outputText').value = "";
-            document.getElementById("sourceLanguageCodeDropdown").value = "en";
-            document.getElementById("targetLanguageCodeDropdown").value = "en";
-        }
-    </script>
+         // Speak text message
+         function speakTextMessage(text) {
+             return new Promise(function (resolve, reject) {
+                 isSpeaking = true;
+                 getAudioStream(text).then(playAudioStream).then(resolve);
+             });
+         }
+
+         // Speak next message in the list
+         function speakNextTextMessage() {
+             var pl = speaker.playlist;
+             if (pl.length > 0) {
+                 var txt = pl[0];
+                 pl.splice(0, 1);
+                 speakTextMessage(txt).then(speakNextTextMessage);
+             }
+         }
+
+         // Get synthesized speech from Amazon polly
+         function getAudioStream(textMessage) {
+             return new Promise(function (resolve, reject) {
+                 var polly = new AWS.Polly();
+                 var params = {
+                     OutputFormat: 'mp3',
+                     Text: textMessage,
+                     VoiceId: voiceId
+                 }
+                 polly.synthesizeSpeech(params, function (err, data) {
+                     if (err)
+                         reject(err);
+                     else
+                         resolve(data.AudioStream);
+                 });
+             });
+         }
+
+         // Play audio stream
+         function playAudioStream(audioStream) {
+             return new Promise(function (resolve, reject) {
+                 var uInt8Array = new Uint8Array(audioStream);
+                 var arrayBuffer = uInt8Array.buffer;
+                 var blob = new Blob([arrayBuffer]);
+
+                 var url = URL.createObjectURL(blob);
+                 audioPlayer.src = url;
+                 audioPlayer.addEventListener("ended", function () {
+                     isSpeaking = false;
+                     resolve();
+                 });
+                 audioPlayer.play();
+             });
+         }
+
+         return speaker;
+     }
+     /**************************Audio player****************************/
+   </script>
 </body>
-
 </html>
