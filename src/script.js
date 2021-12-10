@@ -39,6 +39,7 @@ function realTimeTrans() {
 
 function translateFile(e){
 	e.preventDefault();
+
 	let file = e.dataTransfer.files[0],
         reader = new FileReader();
     reader.onload = function(event) {
