@@ -5,9 +5,12 @@ import { languageCodes } from './utils/langcode';
 
 document.getElementById('inputText').focus();
 AWS.config.region = 'us-east-2';
+AWS.config.region = 'your-region';
 AWS.config.credentials = new AWS.Credentials(
 	'AKIAZUSFWJ4QJ3MGRUHE',
 	'QNEwt7glXKrL4KpV389e0Q1BZa+MHsWguUwpowiv'
+	'your-access-key',
+	'your-secret-key'
 );
 
 var translate = new AWS.Translate({ region: AWS.config.region });
@@ -39,7 +42,6 @@ function realTimeTrans() {
 
 function translateFile(e){
 	e.preventDefault();
-	console.log(e);
 	let file = e.dataTransfer.files[0],
         reader = new FileReader();
     reader.onload = function(event) {
